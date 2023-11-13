@@ -114,13 +114,15 @@ def main():
     st.sidebar.title("Drop your contract documents here ")
     uploaded_files = st.sidebar.file_uploader("Upload files", accept_multiple_files=True)
 
-    if uploaded_files:
+if uploaded_files:
         text = process_uploaded_files(uploaded_files)
         text_splitter = CharacterTextSplitter(separator="\n", chunk_size=1000, chunk_overlap=100, length_function=len)
         text_chunks = text_splitter.split_documents(text)
         embeddings = load_embeddings(text_chunks)
 
-        # Create vector store
+        # Debugging: Inspect embeddings structure
+        print(f"Embeddings: {embeddings[:3]}")  # Print first 3 embeddings
+
         vector_store = FAISS.from_documents(embeddings, embedding=None)
 
         # Create the chain object
