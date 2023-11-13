@@ -114,6 +114,9 @@ def main():
     st.sidebar.title("Drop your contract documents here ")
     uploaded_files = st.sidebar.file_uploader("Upload files", accept_multiple_files=True)
 
+    # Debugging: Inspect the uploaded_files variable
+    print(f"Uploaded files: {uploaded_files}")
+
 if uploaded_files:
         text = process_uploaded_files(uploaded_files)
         text_splitter = CharacterTextSplitter(separator="\n", chunk_size=1000, chunk_overlap=100, length_function=len)
