@@ -49,7 +49,6 @@ def display_chat_history(chain):
                 message(st.session_state["generated"][i], key=str(i), avatar_style="fun-emoji")
 
 def create_conversational_chain(vector_store):
-    # Create llm
     llm = Replicate(
         streaming=True,
         model="replicate/llama-2-70b-chat:58d078176e02c219e11eb4da5a02a7830a283b14cf8f94537af893ccff5ee781", 
@@ -67,14 +66,14 @@ def process_uploaded_files(uploaded_files):
     text = []
     for file in uploaded_files:
         file_extension = os.path.splitext(file.name)[1]
-        with tempfile.NamedTemporaryFile(delete=False) as temp_file:
-            temp_file.write(file.read())
+        with tempfile.NamedTemporaryFile(delete=False, suffix=file_extension) as temp_file:
+            temp_file.write(file.getvalue())
             temp_file_path = temp_file.name
 
         loader = None
         if file_extension == ".pdf":
             loader = PyPDFLoader(temp_file_path)
-        elif file_extension == ".docx" or file_extension == ".doc":
+        elif file_extension in [".docx", ".doc"]:
             loader = Docx2txtLoader(temp_file_path)
         elif file_extension == ".txt":
             loader = TextLoader(temp_file_path)
