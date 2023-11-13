@@ -107,9 +107,19 @@ def process_uploaded_files(uploaded_files):
 
 @st.cache(allow_output_mutation=True, suppress_st_warning=True)
 def load_embeddings(text_chunks):
+    # Check if text_chunks is a list of strings
+    if not all(isinstance(chunk, str) for chunk in text_chunks):
+        raise ValueError("All elements in text_chunks must be strings.")
+
+    # Initialize the embeddings
     embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2", 
                                        model_kwargs={'device': 'cpu'})
-    return embeddings.embed_documents(text_chunks)
+
+    # Clean and prepare text chunks
+    cleaned_text_chunks = [chunk.replace("\n", " ") if isinstance(chunk, str) else "" for chunk in text_chunks]
+
+    return embeddings.embed_documents(cleaned_text_chunks)
+
 
 def main():
     load_dotenv()
