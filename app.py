@@ -25,7 +25,7 @@ def initialize_session_state():
 
     if 'generated' not in st.session_state:
         st.session_state['generated'] = ["Hello! This is a contract evaluation tool"]
-        st.session_state['generated'] = [" This tool was built by Mohamed sabek"]
+        
 
     if 'past' not in st.session_state:
         st.session_state['past'] = ["Hey! 👋"]
@@ -81,6 +81,7 @@ def main():
     # Initialize session state
     initialize_session_state()
     st.title("Evaluation tool for contracts sustainability evaluation ")
+    st.write('This project was programmed by Mohamed sabek as a showcase for 602 - Project procurement course ')
     # Initialize Streamlit
     st.sidebar.title("Drop your contract documents here ")
     uploaded_files = st.sidebar.file_uploader("Upload files", accept_multiple_files=True)
