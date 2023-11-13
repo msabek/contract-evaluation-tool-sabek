@@ -24,9 +24,10 @@ def initialize_session_state():
         st.session_state['history'] = []
 
     if 'generated' not in st.session_state:
-        st.session_state['generated'] = ["Hello! This contract evaluation tool was built by Mohamed Sabek  "]
-    
-    if 'past' not in st.session_state: Evaluation
+        st.session_state['generated'] = ["Hello! This is a contract evaluation tool"]
+        st.session_state['generated'] = [" This tool was built by Mohamed sabek"]
+
+    if 'past' not in st.session_state:
         st.session_state['past'] = ["Hey! 👋"]
 
 def conversation_chat(query, chain, history):
@@ -44,7 +45,7 @@ def display_chat_history(chain):
             submit_button = st.form_submit_button(label='Send')
 
         if submit_button and user_input:
-            with st.spinner('Evaluation in progress ...'):
+            with st.spinner('Generating response...'):
                 output = conversation_chat(user_input, chain, st.session_state['history'])
 
             st.session_state['past'].append(user_input)
@@ -123,4 +124,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
