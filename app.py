@@ -80,9 +80,9 @@ def main():
     load_dotenv()
     # Initialize session state
     initialize_session_state()
-    st.title("Multi-Docs ChatBot using llama2 :books:")
+    st.title("Evaluation tool for contracts sustainability evaluation ")
     # Initialize Streamlit
-    st.sidebar.title("Document Processing")
+    st.sidebar.title("Drop your contract documents here ")
     uploaded_files = st.sidebar.file_uploader("Upload files", accept_multiple_files=True)
 
 
