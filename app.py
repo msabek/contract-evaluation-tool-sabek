@@ -66,19 +66,31 @@ def create_conversational_chain(vector_store):
     return chain
 
 @st.cache(allow_output_mutation=True, suppress_st_warning=True)
-def load_embeddings(text_chunks):
-    # Ensure text_chunks are in the correct format
-    if not all(isinstance(chunk, str) for chunk in text_chunks):
-        raise ValueError("All elements in text_chunks must be strings.")
+def process_uploaded_files(uploaded_files):
+    text = []
+    for file in uploaded_files:
+        try:
+            file_extension = os.path.splitext(file.name)[1]
+            with tempfile.NamedTemporaryFile(delete=False, suffix=file_extension) as temp_file:
+                temp_file.write(file.getvalue())
+                temp_file_path = temp_file.name
 
-    # Initialize the embeddings
-    embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2", 
-                                       model_kwargs={'device': 'cpu'})
+            loader = None
+            if file_extension == ".pdf":
+                loader = PyPDFLoader(temp_file_path)
+            elif file_extension in [".docx", ".doc"]:
+                loader = Docx2txtLoader(temp_file_path)
+            elif file_extension == ".txt":
+                loader = TextLoader(temp_file_path)
 
-    # Ensure no null or malformed text chunks
-    cleaned_text_chunks = [chunk.replace("\n", " ") if chunk else "" for chunk in text_chunks]
+            if loader:
+                text.extend(loader.load())
+                os.remove(temp_file_path)
+        except Exception as e:
+            st.error(f"Error processing file {file.name}: {e}")
+            continue
+    return text
 
-    return embeddings.embed_documents(cleaned_text_chunks)
 
     loader = None
     if file_extension == ".pdf":
