@@ -2,13 +2,11 @@ import streamlit as st
 from streamlit_chat import message
 from langchain.chains import ConversationalRetrievalChain
 from langchain.embeddings import HuggingFaceEmbeddings
-from langchain.llms import CTransformers, Replicate
+from langchain.llms import Replicate
 from langchain.text_splitter import CharacterTextSplitter
 from langchain.vectorstores import FAISS
 from langchain.memory import ConversationBufferMemory
-from langchain.document_loaders import PyPDFLoader
-from langchain.document_loaders import TextLoader
-from langchain.document_loaders import Docx2txtLoader
+from langchain.document_loaders import PyPDFLoader, TextLoader, Docx2txtLoader
 from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
 import os
 from dotenv import load_dotenv
@@ -84,42 +82,26 @@ def process_uploaded_files(uploaded_files):
                 loader = TextLoader(temp_file_path)
 
             if loader:
-                text.extend(loader.load())
+                loaded_text = loader.load()
+                text.extend(loaded_text)
                 os.remove(temp_file_path)
+
+            # Debugging: Print or log the extracted text
+            print(f"Loaded text from {file.name}: {loaded_text[:500]}")  # Print first 500 characters
+
         except Exception as e:
             st.error(f"Error processing file {file.name}: {e}")
             continue
     return text
 
-
-    loader = None
-    if file_extension == ".pdf":
-        loader = PyPDFLoader(temp_file_path)
-    elif file_extension in [".docx", ".doc"]:
-        loader = Docx2txtLoader(temp_file_path)
-    elif file_extension == ".txt":
-        loader = TextLoader(temp_file_path)
-
-        if loader:
-            text.extend(loader.load())
-            os.remove(temp_file_path)
-    return text
-
 @st.cache(allow_output_mutation=True, suppress_st_warning=True)
 def load_embeddings(text_chunks):
-    # Check if text_chunks is a list of strings
-    if not all(isinstance(chunk, str) for chunk in text_chunks):
-        raise ValueError("All elements in text_chunks must be strings.")
+    # Debugging: Print or log the text chunks
+    print(f"Text chunks: {text_chunks[:3]}")  # Print first 3 chunks
 
-    # Initialize the embeddings
     embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2", 
                                        model_kwargs={'device': 'cpu'})
-
-    # Clean and prepare text chunks
-    cleaned_text_chunks = [chunk.replace("\n", " ") if isinstance(chunk, str) else "" for chunk in text_chunks]
-
-    return embeddings.embed_documents(cleaned_text_chunks)
-
+    return embeddings.embed_documents(text_chunks)
 
 def main():
     load_dotenv()
