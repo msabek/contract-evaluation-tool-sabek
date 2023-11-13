@@ -80,7 +80,7 @@ def load_embeddings(text_chunks):
 
     return embeddings.embed_documents(cleaned_text_chunks)
 
-        loader = None
+    loader = None
         if file_extension == ".pdf":
             loader = PyPDFLoader(temp_file_path)
         elif file_extension in [".docx", ".doc"]:
