@@ -76,8 +76,7 @@ def create_conversational_chain(vector_store):
 # Specific prompts after file upload
 def perform_specific_prompts(chain):
     specific_questions = [
-        "Does the uploaded document considered sustainable contract?",
-        "How to make it a sustainable contract?"
+        "Is the uploaded document considered a sustainable contract and How to make it a more  sustainable contract?",
     ]
 
     for question in specific_questions:
